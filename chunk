@@ -1,0 +1,32 @@
+def chunker(string):
+
+    sents_ = clean_sents(string)
+
+    tokenized_sents = [tokenizer.encode(sent, add_special_tokens=False) for sent in sents_]
+
+    usents=[]
+   
+    for sent in tokenized_sents:
+        if sent not in usents:
+            usents.append(sent)
+    
+    if len(usents)>1:
+        result = [i+[102] for i in usents] 
+        result = [101] + sum(result, [])
+    
+    elif len(usents)==1:
+        result = [101] + usents[0] + [102]
+    
+    #else:
+    #    result = tokenizer.encode(sents_[0])
+
+    if len(set(result))/len(result)<0.02:
+        result = [5567] + list(dict.fromkeys(result)) + [5567]
+        
+    if len(result)>512:
+
+        #result = result[:129] + result[-382:]+[102]
+        result = result[:511] + [102]
+
+    
+    return result
